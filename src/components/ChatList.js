@@ -1,37 +1,42 @@
 import React, { useMemo, useState } from "react";
-import PropTypes from "prop-types";
 import { dummyChats } from "../data/dummyData";
 
-function getInitials(name) {
+function getStartname(name) {
   const parts = name.split(" ").filter(Boolean);
   if (parts.length === 1) return parts[0].slice(0, 2).toUpperCase();
   return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase();
 }
 
-function getAvatarClass(name) {
-  const palette = [
+function getAvatarphoto(name) {
+  // A few nice gradient combos for avatars
+  const gradients = [
     "from-indigo-600 to-cyan-400",
     "from-fuchsia-500 to-rose-400",
     "from-emerald-500 to-teal-400",
     "from-amber-500 to-orange-400",
     "from-sky-500 to-blue-400",
     "from-purple-600 to-indigo-500",
+    "from-pink-600 to-orange-400",
+    "from-teal-500 to-lime-400",
+    "from-red-500 to-yellow-400",
+    "from-blue-600 to-violet-400",
+    "from-gray-600 to-gray-400",
+    "from-green-700 to-emerald-400",
   ];
-  let sum = 0;
-  for (let i = 0; i < name.length; i += 1)
-    sum = (sum + name.charCodeAt(i)) % 997;
-  const idx = sum % palette.length;
-  return `bg-gradient-to-tr ${palette[idx]}`;
-}
 
-function getUnreadCount(name) {
+  // Simple hash based on name so each person gets a consistent color
   let hash = 0;
-  for (let i = 0; i < name.length; i += 1)
-    hash = (hash * 31 + name.charCodeAt(i)) >>> 0;
-  return hash % 7; // 0..6 unread
+  for (let i = 0; i < name.length; i++) {
+    hash = (hash + name.charCodeAt(i)) % 1000;
+  }
+
+  const colorIndex = hash % gradients.length;
+  return `bg-gradient-to-tr ${gradients[colorIndex]}`;
 }
 
-const ChatList = ({ onChatSelect, onNewChat }) => {
+
+
+const ChatList = ({ selectedId, onSelectChat, onNewChat }) => {
   const [query, setQuery] = useState("");
 
   const filtered = useMemo(() => {
@@ -44,135 +49,103 @@ const ChatList = ({ onChatSelect, onNewChat }) => {
     );
   }, [query]);
 
-  const isEmpty = filtered.length === 0;
+  //const isEmpty = filtered.length === 0;
 
   return (
-    <div className="flex h-full flex-col bg-white text-gray-900 font-sans dark:bg-stcBg dark:text-stcFg transition-colors">
-      <div className="border-b border-black/10 px-4 pt-4 pb-2 dark:border-white/10">
-        <div className="flex items-center justify-between gap-3">
-          <div className="text-lg font-extrabold tracking-tight text-gray-900 dark:text-white/90">
-            Chats
+    <div className="h-full w-full flex flex-col bg-white relative">
+      <div className="bg-gradient-to-r from-green-500 to-indigo-500 text-white p-3 flex items-center justify-between shadow-md">
+        <div className="flex items-center gap-2">
+          <div className="h-8 w-8 rounded-full grid place-items-center bg-white/20 text-white font-bold">
+            ST
           </div>
+          <div className="text-base font-semibold">Smart Team Chat</div>
+        </div>
+        <div className="flex items-center gap-3">
           <button
             type="button"
-            onClick={() => onNewChat && onNewChat()}
-            className="hidden rounded-lg border border-black/10 px-3 py-1.5 text-xs font-semibold text-gray-900 transition-all hover:scale-[1.02] hover:bg-black/5 active:translate-y-px focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 dark:border-white/10 dark:text-white dark:hover:bg-white/10 sm:inline"
+            className="p-2 rounded-full hover:bg-white/10"
+            aria-label="Search"
           >
-            + New
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              className="h-5 w-5"
+            >
+              <circle cx="11" cy="11" r="7" strokeWidth="2" />
+              <path d="M20 20l-3.5-3.5" strokeWidth="2" />
+            </svg>
+          </button>
+          <button
+            type="button"
+            className="p-2 rounded-full hover:bg-white/10"
+            aria-label="Menu"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 24 24"
+              fill="currentColor"
+              className="h-5 w-5"
+            >
+              <path d="M6 8a2 2 0 1 0 0-4 2 2 0 0 0 0 4Zm0 6a2 2 0 1 0 0-4 2 2 0 0 0 0 4Zm0 6a2 2 0 1 0 0-4 2 2 0 0 0 0 4Z" />
+            </svg>
           </button>
         </div>
-        <div className="mt-3">
-          <div className="relative">
-            <input
-              type="text"
-              value={query}
-              onChange={(e) => setQuery(e.target.value)}
-              placeholder="Search chats"
-              className="w-full rounded-xl border border-black/15 bg-black/5 px-10 py-2.5 text-sm text-gray-900 placeholder-black/40 outline-none transition focus:border-black/25 focus:ring-2 focus:ring-indigo-500 dark:border-white/15 dark:bg-white/5 dark:text-white dark:placeholder-white/40"
-            />
-            <span className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-xs text-gray-500 dark:text-white/50">
-              🔎
-            </span>
-            {query && (
-              <button
-                type="button"
-                onClick={() => setQuery("")}
-                className="absolute right-2 top-1/2 -translate-y-1/2 rounded-md px-2 py-1 text-xs text-gray-600 transition hover:bg-black/10 dark:text-white/60 dark:hover:bg-white/10"
-              >
-                Clear
-              </button>
-            )}
-          </div>
-        </div>
       </div>
 
-      <div className="flex flex-col gap-2 overflow-y-auto px-2 pt-2 no-scrollbar scroll-smooth">
-        {!isEmpty &&
-          filtered.map((chat) => {
-            const unread = getUnreadCount(chat.name);
-            return (
-              <button
-                key={chat.id}
-                type="button"
-                onClick={() => onChatSelect && onChatSelect(chat)}
-                className="group flex w-full cursor-pointer items-center rounded-xl border border-black/10 bg-transparent p-3 text-left outline-none transition-all hover:scale-[1.01] hover:border-black/20 hover:bg-black/5 active:translate-y-px focus-visible:ring-2 focus-visible:ring-indigo-500 dark:border-white/10 dark:hover:border-white/20 dark:hover:bg-white/5"
-              >
-                <div
-                  className={`grid h-10 w-10 min-w-10 place-items-center rounded-xl font-extrabold tracking-wide text-white ${getAvatarClass(
-                    chat.name
-                  )}`}
-                  aria-hidden
-                >
-                  {getInitials(chat.name)}
-                </div>
-                <div className="ml-3 flex min-w-0 flex-1 flex-col">
-                  <div className="flex items-baseline justify-between gap-2">
-                    <span className="truncate text-sm font-bold text-gray-900 dark:text-gray-100">
-                      {chat.name}
-                    </span>
-                    <div className="flex items-center gap-2">
-                      {unread > 0 && (
-                        <span className="inline-flex items-center justify-center rounded-full bg-indigo-600 px-1.5 py-0.5 text-[10px] font-bold text-white shadow-sm">
-                          {unread}
-                        </span>
-                      )}
-                      <span className="shrink-0 text-xs text-gray-500 dark:text-white/60">
-                        {chat.time}
-                      </span>
-                    </div>
-                  </div>
-                  <div className="mt-1">
-                    <span
-                      className="block truncate text-xs text-gray-600 dark:text-white/80"
-                      title={chat.lastMessage}
-                    >
-                      {chat.lastMessage}
-                    </span>
-                  </div>
-                </div>
-              </button>
-            );
-          })}
+      <div className="p-3 border-b">
+        <input
+          type="text"
+          value={query}
+          onChange={(e) => setQuery(e.target.value)}
+          placeholder="Search"
+          className="w-full border rounded-xl px-3 py-2 text-sm"
+        />
+      </div>
 
-        {isEmpty && (
-          <div className="mx-2 my-6 rounded-2xl border border-black/10 bg-black/[0.03] p-8 text-center dark:border-white/10 dark:bg-white/5">
-            <div className="mx-auto mb-3 grid h-14 w-14 place-items-center rounded-2xl bg-gradient-to-tr from-indigo-600 to-cyan-400 text-2xl text-white shadow">
-              💬
-            </div>
-            <div className="text-base font-bold text-gray-900 dark:text-white">
-              No chats found
-            </div>
-            <div className="mt-1 text-sm text-gray-600 dark:text-white/70">
-              Try a different search, or start a new chat.
-            </div>
-            <button
-              type="button"
-              onClick={() => onNewChat && onNewChat()}
-              className="mx-auto mt-4 inline-flex items-center rounded-xl border border-black/20 bg-gradient-to-r from-indigo-500 to-cyan-400 px-4 py-2 text-sm font-bold text-white shadow-sm transition-all hover:scale-[1.02] hover:shadow active:translate-y-px focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 dark:border-white/20"
+      <div className="flex-1 overflow-y-auto">
+        {filtered.map((chat) => (
+          <button
+            key={chat.id}
+            type="button"
+            onClick={() => onSelectChat && onSelectChat(chat.id)}
+            className={`w-full flex items-center gap-3 p-3 border-b hover:bg-gray-50 ${
+              selectedId === chat.id ? "bg-gray-100" : ""
+            }`}
+          >
+            <div
+              className={`h-10 w-10 rounded-full grid place-items-center text-white font-bold ${getAvatarphoto(
+                chat.name
+              )}`}
             >
-              + New Chat
-            </button>
-          </div>
-        )}
+              {getStartname(chat.name)}
+            </div>
+            <div className="flex-1 min-w-0 text-left">
+              <div className="flex items-center justify-between">
+                <div className="font-semibold truncate">{chat.name}</div>
+                <div className="text-xs text-gray-500">{chat.time}</div>
+              </div>
+              <div className="text-xs text-gray-600 truncate">
+                {chat.lastMessage}
+              </div>
+            </div>
+          </button>
+        ))}
       </div>
 
-      <div className="sticky bottom-0 mt-auto border-t border-black/10 bg-gradient-to-b from-transparent to-white/60 p-3 dark:border-white/10 dark:to-[#0b0f19]/60">
+      <div className="absolute bottom-4 right-4">
         <button
           type="button"
           onClick={() => onNewChat && onNewChat()}
-          className="w-full rounded-xl border border-black/20 bg-gradient-to-r from-indigo-500 to-cyan-400 px-4 py-3 font-bold text-white shadow-sm transition-all hover:scale-[1.01] hover:shadow active:translate-y-px focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 dark:border-white/20"
+          className="text-white bg-emerald-600  rounded-full p-4 shadow-lg"
+          aria-label="New Chat"
         >
-          + New Chat
+          +
         </button>
       </div>
     </div>
   );
 };
-
-ChatList.propTypes = {
-  onChatSelect: PropTypes.func,
-  onNewChat: PropTypes.func,
-};
-
 
 export default ChatList;
