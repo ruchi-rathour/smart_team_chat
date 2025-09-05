@@ -40,39 +40,57 @@ It’s a frontend-only prototype designed to simulate a team messaging experienc
 
 smart-team-chat/
 │
+├─ public/
+│ └─ index.html # Main HTML file
+│
 ├─ src/
 │ ├─ components/
-│ │ ├─ ChatList.jsx # Shows list of chats
+│ │ ├─ ChatList.jsx # Displays list of chats
 │ │ ├─ ChatWindow.jsx # Displays chat messages and AI actions
-│ │ ├─ NewChat.jsx # Create new chats with icebreakers
-│ │ └─ ErrorBoundary.jsx # Catches errors and displays fallback UI
+│ │ ├─ NewChat.jsx # Form to create new chats
+│ │ └─ ErrorBoundary.jsx # Catches runtime errors and shows fallback UI
 │ │
 │ ├─ data/
-│ │ └─ dummyData.js # Sample chat data and helper functions
+│ │ └─ dummyData.js # Sample chats, messages, and helper functions
 │ │
 │ ├─ App.jsx # Main app component
 │ └─ index.js # Entry point
 │
-├─ package.json
-└─ tailwind.config.js
-Data
+├─ package.json # Project dependencies and scripts
+└─ tailwind.config.js # Tailwind CSS configuration
 
+## **Data**
 dummyData.js provides sample chats, messages, and utility functions:
-
 findChatById(id) → Get a chat by its ID
-
 addChat(name) → Add a new chat
-
 Note: All data is in-memory and resets on page reload.
-
 Future Improvements
+Connect to a real backend for persistent messaging (Firebase, Node.js, etc.)
+Implement real-time messaging via WebSockets
+Add user authentication
+Make AI suggestions dynamic using an API
+Add dark mode and improved mobile responsiveness
+
+##**Future Improvements**
 
 Connect to a real backend for persistent messaging (Firebase, Node.js, etc.)
-
 Implement real-time messaging via WebSockets
-
 Add user authentication
-
 Make AI suggestions dynamic using an API
-
 Add dark mode and improved mobile responsiveness
+
+## Getting Started
+
+Follow these steps to run the Smart Team Chat project locally:
+
+1. **Clone the repository:**
+
+```bash
+git clone <your-repo-url>
+2. **Install dependencies:**
+cd smart-team-chat
+npm install
+3. **Start the development server:**
+npm start
+4. **Open http://localhost:3000
+
