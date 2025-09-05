@@ -174,6 +174,5 @@ ChatList.propTypes = {
   onNewChat: PropTypes.func,
 };
 
-// Tailwind-only styling; no inline style objects or CSS blocks.
 
 export default ChatList;

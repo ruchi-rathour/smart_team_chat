@@ -5,7 +5,7 @@ import NewChat from "./components/NewChat";
 import { dummyChats } from "./data/dummyData";
 
 const App = () => {
-  const [screen, setScreen] = useState("chatList"); // 'chatList' | 'chatWindow' | 'newChat'
+  const [screen, setScreen] = useState("chatList");
   const [selectedChat, setSelectedChat] = useState(null);
 
   const openChat = useCallback((chat) => {
@@ -28,8 +28,17 @@ const App = () => {
   }, []);
 
   return (
-    <div className={`h-screen w-screen font-sans ${"dark"}`}>
-      <div className="mx-auto flex h-full max-w-6xl flex-col px-4 py-4 bg-white text-gray-900 dark:bg-stcBg dark:text-stcFg transition-colors">
+    <div
+      className={`h-screen w-screen font-sans ${"dark"}`}
+      style={{
+        backgroundImage: "url('/back_image.jpg')",
+        backgroundSize: "cover",
+        backgroundPosition: "center",
+        backgroundRepeat: "no-repeat",
+        backgroundAttachment: "fixed",
+      }}
+    >
+      <div className="mx-auto flex h-full max-w-6xl flex-col px-4 py-4 bg-white/90 text-gray-900 dark:bg-stcBg/90 dark:text-stcFg transition-colors backdrop-blur-sm">
         <header className="mb-4 flex items-center justify-between">
           <h1 className="text-lg font-extrabold tracking-tight text-gray-900 dark:text-white/90">
             Smart Team Chat

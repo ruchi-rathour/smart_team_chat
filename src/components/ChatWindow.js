@@ -158,6 +158,5 @@ ChatWindow.propTypes = {
   title: PropTypes.string,
 };
 
-// Tailwind-only styling; no inline style objects or CSS blocks.
 
 export default ChatWindow;
